@@ -39,11 +39,40 @@ public class HelloWorld {
 
         float v = caluculateFloatingsum(i, j, f1);
         System.out.println("output "+v);
+        objectCreation();
+        }
+    public static void objectCreation() {
+        Stocks appleStock = new Stocks("AAPL" ,"APPLE");
+        appleStock.setSectorID(10);
+        appleStock.setMarketCap(15.246);
+        Stocks microsoftStock = new Stocks("MSFT","Microsoft");
+        microsoftStock.setSectorID(10);
+        microsoftStock.setMarketCap(12.246);
+        Stocks newOne = new Stocks("TSLA","Tesla");
+        microsoftStock.setSectorID(13);
+        microsoftStock.setMarketCap(13.579);
+
+        playingWithObjects(appleStock, appleStock.getMarketCap());
+        System.out.println("The Ticker symbol is "+appleStock.getTickerSymbol());
+        System.out.println("The marketcap is"+appleStock.getMarketCap());
+
+
     }
+
+    private static void playingWithObjects(Stocks someStock, double marketCap) {
+        System.out.println("The Ticker symbol is"+someStock.getTickerSymbol());
+        System.out.println("The marketcap is "+someStock.getMarketCap());
+        System.out.println("Local market Cap "+marketCap);
+        marketCap=256;
+        System.out.println("market Cap "+marketCap);
+
+        someStock = new Stocks("V","Visa");
+
+    }
+
     static int sumOfNumbers(int n1, int n2){   //method signature (return type, method name, inputs)
         return n1+n2;
     }
-
     static void printSumOfDoubles(double num1, double num2){
         double num3=10.55;
         System.out.println("Sum of given doubles is "+(num1+num2+num3));
@@ -56,4 +85,7 @@ public class HelloWorld {
         float n22 = n2;
         return (n11+n22+f);
     }
-}
+    }
+
+
+
