@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+
 public class HelloWorld {
     public static void main(String[] args) {
         System.out.println("Hello World");
@@ -20,6 +22,14 @@ public class HelloWorld {
 
         double d1 = 16.34;
         double d2 = 19.66;
+        System.out.println("Multiplication output of d1&d2 is :"+(d1*d2));
+
+        BigDecimal d1BigDec = new BigDecimal("16.001");
+        BigDecimal d2BigDec = new BigDecimal("19.66");
+
+        System.out.println("Multiplication output od d1 &de using BigDecimal is"+d2BigDec.multiply(d1BigDec));
+
+
 
         float df1 = (float) d1;     //typecasting : changing the data type of a variable
 

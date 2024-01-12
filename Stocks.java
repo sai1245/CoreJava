@@ -2,12 +2,22 @@
  * This class represent unique stocks in the US
  */
 public class Stocks {
+
+    public static final String someValue="somevalue";
     /**
      * Constructor that forces you to enter ticker symbol and ticker name
      */
     public Stocks(String outsideTickerSymbol, String outsideTickerName) {
         this.tickerSymbol = outsideTickerSymbol;
         this.tickerName = outsideTickerName;
+    }
+
+    public static String someJunkMethod(String junkString){
+        return someValue+junkString;
+    }
+
+    static {
+        System.out.println("Printing the static block statement");
     }
 
     private String tickerSymbol;    //instance variable
