@@ -63,6 +63,10 @@ public class HelloWorld {
         teslaStock.setSectorID(13);
         teslaStock.setMarketCap(13579);
 
+//        System.out.println("Microsoft Stock :"+microsoftStock);
+
+        System.out.println(appleStock.toString());
+
         Stocks.newMethod(teslaStock);
 
 

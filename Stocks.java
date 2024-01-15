@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * This class represent unique stocks in the US
  */
@@ -55,4 +57,42 @@ public class Stocks {
         System.out.println("Ticker Market Cap is " + stockName.getMarketCap());
         System.out.println("Ticker ID is " + stockName.getSectorID());
     }
+
+    @Override
+    public String toString() {
+        return "Stocks{" +
+                "tickerSymbol='" + tickerSymbol + '\'' +
+                ", tickerName='" + tickerName + '\'' +
+                ", sectorID=" + sectorID +
+                ", marketCap=" + marketCap +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stocks stocks = (Stocks) o;
+        return Objects.equals(tickerSymbol, stocks.tickerSymbol) && Objects.equals(tickerName, stocks.tickerName);
+    }
+
+//    @Override
+//    public boolean equals(Object otherobject){
+//        boolean isEqual = false;
+//        Stocks otherStockObj = null;
+//        if(otherStockObj!= null && otherobject instanceof Stocks){
+//            otherStockObj = (Stocks)otherStockObj;
+//            if (otherStockObj.getTickerSymbol().equals(this.tickerSymbol) && otherStockObj.getTickerName().equals(this.tickerName)){
+//                isEqual=false;
+//            }
+//        }
+//
+//        return isEqual;
+//    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tickerSymbol, tickerName);
+    }
 }
+
