@@ -25,4 +25,10 @@ public class CheckingAccount extends Account {
     public void printDetails() {
         System.out.println("Checking Account");
     }
+    @Override
+    public String toString() {
+        return "CheckingAccount{}: Account Number is: "+getAccountNumber()+" , Account Balance: "+getAccountBalance()+", cashBack: "+cashBackRate;
+    }
 }
+
+

@@ -11,4 +11,9 @@ public class SavingAccount extends Account{
     public void printDetails() {
         System.out.println("Savings Account");
     }
+
+    @Override
+    public String toString() {
+        return "SavingAccount{} Account Number is: "+getAccountNumber()+" , Account Balance: "+getAccountBalance();
+    }
 }

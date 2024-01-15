@@ -1,6 +1,7 @@
 package io.endeavourtech.inheritance;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public abstract class Account {
 
@@ -10,6 +11,19 @@ public abstract class Account {
     public Account(String accountNumber, BigDecimal accountBalance) {
         this.accountNumber = accountNumber;
         this.accountBalance = accountBalance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(accountNumber, account.accountNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountNumber);
     }
 
     public String getAccountNumber() {
@@ -41,6 +55,14 @@ public abstract class Account {
     }
 
     public abstract void printDetails();
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", accountBalance=" + accountBalance +
+                '}';
+    }
 }
 
 
