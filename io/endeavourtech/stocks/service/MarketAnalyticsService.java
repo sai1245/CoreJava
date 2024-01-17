@@ -12,15 +12,15 @@ import java.util.List;
 public class MarketAnalyticsService {
     LookUpDao lookUpDao;
 
+//Dependacy Injectoin - MarketAnalyticsService needs lookupDao to function ad hence the lookup object is created and injected into the constructor
 
-    public MarketAnalyticsService(LookUpDao lookUpDao) {
-        this.lookUpDao = lookUpDao;
-    }
     StockFundamentalsDao stockFundamentalsDao;
 
-    public MarketAnalyticsService(StockFundamentalsDao stockFundamentalsDao) {
+    public MarketAnalyticsService(LookUpDao lookUpDao, StockFundamentalsDao stockFundamentalsDao) {
+        this.lookUpDao = lookUpDao;
         this.stockFundamentalsDao = stockFundamentalsDao;
     }
+
 
     public List<StockFundamentalsVo> getAllStockDetails() throws SQLException {
         return stockFundamentalsDao.getAllStockDetails();
@@ -32,6 +32,11 @@ public class MarketAnalyticsService {
 
     public List<SubSectorVo> getAllSubSectors() throws SQLException {
         return lookUpDao.getAllSubSectors();
+    }
+
+
+    public List<SubSectorVo> getAllSubSectorsOfEconomyByID(List<Integer> subSectorIds) throws SQLException {
+        return lookUpDao.getAllSubSectorID( subSectorIds);
     }
 
 

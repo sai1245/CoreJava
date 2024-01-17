@@ -8,21 +8,31 @@ import io.endeavourtech.stocks.vo.StockFundamentalsVo;
 import io.endeavourtech.stocks.vo.SubSectorVo;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StockAnalytics {
-    public static void main(String[] args) throws SQLException {
-        LookUpDao lookUpDao = new LookUpDao();
-        MarketAnalyticsService marketAnalyticsService= new MarketAnalyticsService(lookUpDao);
-        List<SectorVo> allSectorslist = marketAnalyticsService.getAllSectorEconomy();
-        System.out.println(allSectorslist);
+    public static void main(String[] args) {
+        try(LookUpDao lookUpDao = new LookUpDao();
+            StockFundamentalsDao stockFundamentalsDao = new StockFundamentalsDao();) {
 
-        List<SubSectorVo> allSubSectors = marketAnalyticsService.getAllSubSectors();
-        System.out.println(allSubSectors);
+            MarketAnalyticsService marketAnalyticsService = new MarketAnalyticsService(lookUpDao,stockFundamentalsDao);
+            List<SectorVo> allSectorslist = marketAnalyticsService.getAllSectorEconomy();
+//            System.out.println(allSectorslist);
 
-        StockFundamentalsDao stockFundamentalsDao =new StockFundamentalsDao();
-        MarketAnalyticsService marketAnalyticsService1 = new MarketAnalyticsService(stockFundamentalsDao);
-        List<StockFundamentalsVo> allStockDetails = marketAnalyticsService1.getAllStockDetails();
-        System.out.println(allStockDetails);
+
+            List<StockFundamentalsVo> allStockDetails = marketAnalyticsService.getAllStockDetails();
+//            System.out.println(allStockDetails);
+
+            List<Integer> subSectorIds= new ArrayList<>();
+            subSectorIds.add(189);
+            subSectorIds.add(239);
+            subSectorIds.add(269);
+            List<SubSectorVo> allSubSectorsOfEconomyByID=marketAnalyticsService.getAllSubSectorsOfEconomyByID(subSectorIds);
+            System.out.println(allSubSectorsOfEconomyByID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        };
+
     }
 }

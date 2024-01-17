@@ -1,5 +1,6 @@
 package io.endeavourtech.stocks.dao;
 
+import io.endeavourtech.stocks.StockException;
 import io.endeavourtech.stocks.vo.StockFundamentalsVo;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class StockFundamentalsDao extends BaseDao{
 //        return stockFundamentalsVoList;
 //    }
 
-    public List<StockFundamentalsVo> getAllStockDetails() throws SQLException {
+    public List<StockFundamentalsVo> getAllStockDetails() {
         String sqlQuery = """
                 select
                     sf.ticker_symbol ,
@@ -54,17 +55,22 @@ public class StockFundamentalsDao extends BaseDao{
                     sf.ticker_symbol = sl.ticker_symbol
                 """;
         List<StockFundamentalsVo> stockFundamentalsVoList = new ArrayList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()){
-            StockFundamentalsVo stockFundamentalsVo = new StockFundamentalsVo();
-            stockFundamentalsVo.setTickerSymbol(resultSet.getString("ticker_symbol"));
-            stockFundamentalsVo.setTickerName(resultSet.getString("ticker_name"));
-            stockFundamentalsVo.setMarketCap(resultSet.getLong("market_cap"));
-            stockFundamentalsVo.setCurrentRatio(resultSet.getBigDecimal("current_ratio"));
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                StockFundamentalsVo stockFundamentalsVo = new StockFundamentalsVo();
+                stockFundamentalsVo.setTickerSymbol(resultSet.getString("ticker_symbol"));
+                stockFundamentalsVo.setTickerName(resultSet.getString("ticker_name"));
+                stockFundamentalsVo.setMarketCap(resultSet.getLong("market_cap"));
+                stockFundamentalsVo.setCurrentRatio(resultSet.getBigDecimal("current_ratio"));
 
-            stockFundamentalsVoList.add(stockFundamentalsVo);
+                stockFundamentalsVoList.add(stockFundamentalsVo);
 
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new StockException("Exception in StockFundamentalsDao getAllStockDetails",e);
         }
         return stockFundamentalsVoList;
     }
