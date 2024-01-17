@@ -7,10 +7,30 @@ public class StockFundamentalsVo {
 
     private String tickerName;
 
+    private int sectorId;
+
+    private int subsectorId;
+
     private String tickerSymbol;
 
     private Long marketCap;
     private BigDecimal currentRatio;
+
+    public int getSectorId() {
+        return sectorId;
+    }
+
+    public void setSectorId(int sectorId) {
+        this.sectorId = sectorId;
+    }
+
+    public int getSubsectorId() {
+        return subsectorId;
+    }
+
+    public void setSubsectorId(int subsectorId) {
+        this.subsectorId = subsectorId;
+    }
 
     public String getTickerName() {
         return tickerName;
@@ -48,6 +68,8 @@ public class StockFundamentalsVo {
     public String toString() {
         return "StockFundamentalsVo{" +
                 "tickerName='" + tickerName + '\'' +
+                ", sectorId=" + sectorId +
+                ", subsectorId=" + subsectorId +
                 ", tickerSymbol='" + tickerSymbol + '\'' +
                 ", marketCap=" + marketCap +
                 ", currentRatio=" + currentRatio +

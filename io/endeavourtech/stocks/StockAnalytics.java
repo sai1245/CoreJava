@@ -22,7 +22,7 @@ public class StockAnalytics {
 
 
             List<StockFundamentalsVo> allStockDetails = marketAnalyticsService.getAllStockDetails();
-//            System.out.println(allStockDetails);
+            System.out.println(allStockDetails);
 
             List<Integer> subSectorIds= new ArrayList<>();
             subSectorIds.add(189);
