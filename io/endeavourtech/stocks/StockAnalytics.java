@@ -1,8 +1,10 @@
 package io.endeavourtech.stocks;
 
 import io.endeavourtech.stocks.dao.LookUpDao;
+import io.endeavourtech.stocks.dao.StockFundamentalsDao;
 import io.endeavourtech.stocks.service.MarketAnalyticsService;
 import io.endeavourtech.stocks.vo.SectorVo;
+import io.endeavourtech.stocks.vo.StockFundamentalsVo;
 import io.endeavourtech.stocks.vo.SubSectorVo;
 
 import java.sql.SQLException;
@@ -17,5 +19,10 @@ public class StockAnalytics {
 
         List<SubSectorVo> allSubSectors = marketAnalyticsService.getAllSubSectors();
         System.out.println(allSubSectors);
+
+        StockFundamentalsDao stockFundamentalsDao =new StockFundamentalsDao();
+        MarketAnalyticsService marketAnalyticsService1 = new MarketAnalyticsService(stockFundamentalsDao);
+        List<StockFundamentalsVo> allStockDetails = marketAnalyticsService1.getAllStockDetails();
+        System.out.println(allStockDetails);
     }
 }
