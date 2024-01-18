@@ -2,7 +2,7 @@ package io.endeavourtech.stocks.vo;
 
 import java.util.Objects;
 
-public class SubSectorVo {
+public class SubSectorVo implements Comparable<SubSectorVo> {
 
     private int subSectorId;
 
@@ -53,5 +53,15 @@ public class SubSectorVo {
     @Override
     public int hashCode() {
         return Objects.hash(subSectorId);
+    }
+
+    @Override
+    public int compareTo(SubSectorVo otherObj) {
+        if(this.getSubSectorId()==otherObj.subSectorId)
+        return 0;
+        else if (this.getSubSectorId() > otherObj.subSectorId)
+            return -1;
+        else
+            return 1;
     }
 }

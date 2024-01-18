@@ -3,7 +3,7 @@ package io.endeavourtech.stocks.vo;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class StockFundamentalsVo {
+public class StockFundamentalsVo implements Comparable<StockFundamentalsVo>{
 
     private String tickerName;
 
@@ -87,5 +87,10 @@ public class StockFundamentalsVo {
     @Override
     public int hashCode() {
         return Objects.hash(tickerSymbol);
+    }
+
+    @Override
+    public int compareTo(StockFundamentalsVo o) {
+        return this.getTickerSymbol().compareTo(o.getTickerSymbol());
     }
 }
