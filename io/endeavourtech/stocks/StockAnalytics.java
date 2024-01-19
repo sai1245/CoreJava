@@ -22,26 +22,21 @@ public class StockAnalytics {
 
             MarketAnalyticsService marketAnalyticsService = new MarketAnalyticsService(lookUpDao,stockFundamentalsDao);
             List<SectorVo> allSectorslist = marketAnalyticsService.getAllSectorEconomy();
-//            System.out.println(allSectorslist);
+            System.out.println(allSectorslist);
 
-            List<SubSectorVo> allSubSectorList = marketAnalyticsService.getAllSubSectors();
-            Collections.sort(allSubSectorList);
-            Collections.sort(allSubSectorList, new SubSectorComparator());
-//            System.out.println(allSubSectorList);
+            List<SubSectorVo> allSubSectorlist = marketAnalyticsService.getAllSubSectors();
+            System.out.println(allSubSectorlist);
 
 
             List<StockFundamentalsVo> allStockDetails = marketAnalyticsService.getAllStockDetails();
-            Collections.sort(allStockDetails);
-//            Collections.sort(allStockDetails, new StockFundamentalSort());
-            Collections.sort(allStockDetails, new MarketCapComparator());
-            System.out.println(allStockDetails);
+           System.out.println(allStockDetails);
 
             List<Integer> subSectorIds= new ArrayList<>();
             subSectorIds.add(189);
             subSectorIds.add(239);
             subSectorIds.add(269);
-            List<SubSectorVo> allSubSectorsOfEconomyByID=marketAnalyticsService.getAllSubSectorsOfEconomyByID(subSectorIds);
-//            System.out.println(allSubSectorsOfEconomyByID);
+            List<SubSectorVo> allSubSectorsOfEconomyByID=marketAnalyticsService.getAllSubSectors();
+            System.out.println(allSubSectorsOfEconomyByID);
         } catch (SQLException e) {
             e.printStackTrace();
         };

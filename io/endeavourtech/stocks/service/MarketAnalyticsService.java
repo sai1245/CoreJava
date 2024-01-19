@@ -2,11 +2,16 @@ package io.endeavourtech.stocks.service;
 
 import io.endeavourtech.stocks.dao.LookUpDao;
 import io.endeavourtech.stocks.dao.StockFundamentalsDao;
+import io.endeavourtech.stocks.sort.MarketCapComparator;
+import io.endeavourtech.stocks.sort.StockFundamentalSort;
+import io.endeavourtech.stocks.sort.SubSectorComparator;
 import io.endeavourtech.stocks.vo.SectorVo;
 import io.endeavourtech.stocks.vo.StockFundamentalsVo;
 import io.endeavourtech.stocks.vo.SubSectorVo;
 
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MarketAnalyticsService {
@@ -21,23 +26,34 @@ public class MarketAnalyticsService {
         this.stockFundamentalsDao = stockFundamentalsDao;
     }
 
-
-    public List<StockFundamentalsVo> getAllStockDetails() throws SQLException {
-        return stockFundamentalsDao.getAllStockDetails();
-    }
-
     public List<SectorVo> getAllSectorEconomy() throws SQLException {
-        return lookUpDao.getAllSectors();
+        List<SectorVo> allSectorslist = lookUpDao.getAllSectors();
+        return allSectorslist;
     }
 
     public List<SubSectorVo> getAllSubSectors() throws SQLException {
-        return lookUpDao.getAllSubSectors();
+        List<SubSectorVo> allSubSectorslist = lookUpDao.getAllSubSectors();
+        Collections.sort(allSubSectorslist);
+        Collections.sort(allSubSectorslist, new SubSectorComparator());
+
+        return allSubSectorslist;
     }
 
-
-    public List<SubSectorVo> getAllSubSectorsOfEconomyByID(List<Integer> subSectorIds) throws SQLException {
-        return lookUpDao.getAllSubSectorID( subSectorIds);
+    public List<StockFundamentalsVo> getAllStockFundamentals() {
+        List<StockFundamentalsVo> allStockFundamentalsList = stockFundamentalsDao.getAllStockDetails();
+        Collections.sort(allStockFundamentalsList);
+        allStockFundamentalsList.sort(Comparator.comparing(StockFundamentalsVo::getTickerName));
+        return allStockFundamentalsList;
     }
 
+        public List<StockFundamentalsVo> getAllStockDetails() {
+            List<StockFundamentalsVo> allStockDetailslist = stockFundamentalsDao.getAllStockDetails();
+            allStockDetailslist.sort(Comparator.comparing(StockFundamentalsVo::getTickerSymbol));
+            Collections.sort(allStockDetailslist);
+            Collections.sort(allStockDetailslist, new StockFundamentalSort());
+            Collections.sort(allStockDetailslist, new MarketCapComparator());
+            allStockDetailslist.sort((o1, o2) -> o2.getMarketCap().compareTo(o1.getMarketCap()));
+            return allStockDetailslist;
+        }
 
-}
+    }
