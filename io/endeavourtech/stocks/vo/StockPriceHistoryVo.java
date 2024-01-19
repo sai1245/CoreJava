@@ -1,6 +1,8 @@
 package io.endeavourtech.stocks.vo;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class StockPriceHistoryVo {
@@ -10,6 +12,16 @@ public class StockPriceHistoryVo {
     private BigDecimal closePrice;
 
     private BigDecimal volume;
+
+    private LocalDate tradingDate;
+
+    public LocalDate getTradingDate() {
+        return tradingDate;
+    }
+
+    public void setTradingDate(LocalDate tradingDate) {
+        this.tradingDate = tradingDate;
+    }
 
     public String getTickerSymbol() {
         return tickerSymbol;
@@ -37,10 +49,11 @@ public class StockPriceHistoryVo {
 
     @Override
     public String toString() {
-        return "StockPriceHistory{" +
+        return "StockPriceHistoryVo{" +
                 "tickerSymbol='" + tickerSymbol + '\'' +
                 ", closePrice=" + closePrice +
                 ", volume=" + volume +
+                ", tradingDate=" + tradingDate +
                 '}';
     }
 

@@ -13,6 +13,8 @@ import io.endeavourtech.stocks.vo.StockPriceHistoryVo;
 import io.endeavourtech.stocks.vo.SubSectorVo;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +25,8 @@ public class StockAnalytics {
             StockFundamentalsDao stockFundamentalsDao = new StockFundamentalsDao();
             StockPriceHistoryDao stockPriceHistoryDao = new StockPriceHistoryDao()) {
 
-            MarketAnalyticsService marketAnalyticsService = new MarketAnalyticsService(lookUpDao,stockFundamentalsDao, stockPriceHistoryDao);
+            MarketAnalyticsService marketAnalyticsService = new MarketAnalyticsService(lookUpDao,stockFundamentalsDao,
+                    stockPriceHistoryDao);
 
             List<SectorVo> allSectorslist = marketAnalyticsService.getAllSectorEconomy();
 //            System.out.println(allSectorslist);
@@ -37,8 +40,16 @@ public class StockAnalytics {
 
 
            List<StockPriceHistoryVo> allStocksVolumeAndClosePrices = marketAnalyticsService.getAllStockVolumesAndClosePrices();
-           System.out.println(allStocksVolumeAndClosePrices);
+//           System.out.println(allStocksVolumeAndClosePrices);
 
+            LocalDate fromDate = LocalDate.parse("2023-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+           List<StockPriceHistoryVo> stockPriceHistoryVos;
+            stockPriceHistoryVos = marketAnalyticsService.getStockVolumeAndClosePriceandDates("MSFT",
+                    fromDate,
+                    fromDate.plusMonths(3));
+
+            System.out.println(stockPriceHistoryVos);
 
 
             List<Integer> subSectorIds= new ArrayList<>();

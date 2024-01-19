@@ -12,6 +12,7 @@ import io.endeavourtech.stocks.vo.StockPriceHistoryVo;
 import io.endeavourtech.stocks.vo.SubSectorVo;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -65,7 +66,13 @@ public class MarketAnalyticsService {
     public List<StockPriceHistoryVo> getAllStockVolumesAndClosePrices() {
         List<StockPriceHistoryVo> allStocksCloseAndVolumes = stockPriceHistoryDao.getStockVolumeAndClosePrice();
         allStocksCloseAndVolumes.sort(((o1, o2) -> o2.getVolume().compareTo(o1.getVolume())));
+//        System.out.println(allStocksCloseAndVolumes);
         allStocksCloseAndVolumes.sort(Comparator.comparing(StockPriceHistoryVo::getClosePrice));
         return allStocksCloseAndVolumes;
+    }
+
+    public List<StockPriceHistoryVo> getStockVolumeAndClosePriceandDates(String tickerSymbol, LocalDate fromDate, LocalDate toDate) {
+        List<StockPriceHistoryVo> allStocksCloseAndVolumesDates = stockPriceHistoryDao.getStockVolumeAndClosePriceandDate(tickerSymbol,fromDate,toDate);
+        return allStocksCloseAndVolumesDates;
     }
 }
