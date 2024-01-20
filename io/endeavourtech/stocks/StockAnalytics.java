@@ -32,7 +32,7 @@ public class StockAnalytics {
 //            System.out.println(allSectorslist);
 
             List<SubSectorVo> allSubSectorlist = marketAnalyticsService.getAllSubSectors();
-//            System.out.println(allSubSectorlist);
+            System.out.println(allSubSectorlist);
 
 
             List<StockFundamentalsVo> allStockDetails = marketAnalyticsService.getAllStockDetails();
@@ -49,8 +49,10 @@ public class StockAnalytics {
                     fromDate,
                     fromDate.plusMonths(3));
 
-            System.out.println(stockPriceHistoryVos);
+//            System.out.println(stockPriceHistoryVos);
 
+
+            marketAnalyticsService.processHealthCareStocks();
 
             List<Integer> subSectorIds= new ArrayList<>();
             subSectorIds.add(189);

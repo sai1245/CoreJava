@@ -1,10 +1,8 @@
 import io.endeavourtech.inheritance.CheckingAccount;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ArrayListExamples {
     public static void main(String[] args) {
@@ -58,5 +56,42 @@ public class ArrayListExamples {
         junkArrayList.add(new CheckingAccount("Account 1",new BigDecimal("1209")));
 
 
+
+
+        //First example of streams
+        List<Integer> integerList=List.of(1,2,3,4,5,6,7,8,9);
+        List<Integer> evenSquareCollectioList = integerList.stream()
+                .filter(n -> n % 2 != 0) //Fileter intermediate function takes Predicate as input
+                .map(n -> n * n)    //Map intermediate function takes a function as input
+                .sorted(Comparator.comparing(Integer::intValue).reversed())
+                .collect(Collectors.toList());//Terminal function
+
+
+        System.out.println(evenSquareCollectioList);
+
+
+        //optional
+        String inputValue = "Sai Krishna";
+//        String inputValue = null;
+        String outputValue = null;
+        Optional<String> exampleOptional = Optional.ofNullable(inputValue);
+        if (exampleOptional.isPresent()){
+            outputValue=exampleOptional.get();
+        }
+        else {
+            outputValue="Whatever";
+        }
+        System.out.println(outputValue);
+
+        String anotherOutputValue = Optional.ofNullable(inputValue).orElse("whatever");
+        System.out.println(anotherOutputValue);
+
+        exampleOptional.ifPresent(s-> System.out.println(s));   //using lamda function
+        exampleOptional.ifPresent(System.out::println);     //functional interfaces
+
+        //Example of reduce -- termianal function
+        Optional<Integer> sumOptional = integerList.stream()
+                .reduce((a,b)->a+b); //terminal function
+        sumOptional.ifPresent(num -> System.out.println("Sum of values in the list :"+num));
     }
 }

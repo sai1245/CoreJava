@@ -11,12 +11,12 @@ import io.endeavourtech.stocks.vo.StockFundamentalsVo;
 import io.endeavourtech.stocks.vo.StockPriceHistoryVo;
 import io.endeavourtech.stocks.vo.SubSectorVo;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MarketAnalyticsService {
     LookUpDao lookUpDao;
@@ -36,13 +36,19 @@ public class MarketAnalyticsService {
     public List<SectorVo> getAllSectorEconomy() throws SQLException {
         List<SectorVo> allSectorslist = lookUpDao.getAllSectors();
         return allSectorslist;
+
     }
 
     public List<SubSectorVo> getAllSubSectors() throws SQLException {
         List<SubSectorVo> allSubSectorslist = lookUpDao.getAllSubSectors();
-        Collections.sort(allSubSectorslist);
-        Collections.sort(allSubSectorslist, new SubSectorComparator());
+//        Collections.sort(allSubSectorslist);
+//        Collections.sort(allSubSectorslist, new SubSectorComparator());
 
+        Map<Integer, String>  subsectorIdandNamesMap = allSubSectorslist.stream()
+                .collect(Collectors.toMap(SubSectorVo::getSubSectorId,
+                        SubSectorVo::getSubSectorName));
+
+        System.out.println(subsectorIdandNamesMap);
         return allSubSectorslist;
     }
 
@@ -73,6 +79,70 @@ public class MarketAnalyticsService {
 
     public List<StockPriceHistoryVo> getStockVolumeAndClosePriceandDates(String tickerSymbol, LocalDate fromDate, LocalDate toDate) {
         List<StockPriceHistoryVo> allStocksCloseAndVolumesDates = stockPriceHistoryDao.getStockVolumeAndClosePriceandDate(tickerSymbol,fromDate,toDate);
+        allStocksCloseAndVolumesDates.sort(Comparator.comparing(StockPriceHistoryVo::getClosePrice).reversed().thenComparing(
+                Comparator.comparing(StockPriceHistoryVo::getTradingDate)
+        ));
         return allStocksCloseAndVolumesDates;
+    }
+
+    public void processHealthCareStocks(){
+        List<StockFundamentalsVo> healthCareList = new ArrayList<>();
+        List<StockFundamentalsVo> allStockFundamentslsDetailsList = stockFundamentalsDao.getAllStockDetails();
+        allStockFundamentslsDetailsList.forEach(stockFundamentalsVo -> {
+            if (stockFundamentalsVo.getSectorId()==10){
+//                System.out.println(stockFundamentalsVo);
+                healthCareList.add(stockFundamentalsVo);
+
+            }
+        });
+        System.out.println(healthCareList);
+
+        List<StockFundamentalsVo> healthStream = allStockFundamentslsDetailsList.stream()
+                .filter(stockFundamentalsVo -> stockFundamentalsVo.getSectorId()==10)
+                .sorted(Comparator.comparing(StockFundamentalsVo::getCurrentRatio,
+                        Comparator.nullsFirst(BigDecimal::compareTo)).reversed())
+                .collect(Collectors.toList());
+
+        System.out.println("");
+
+
+        //get the count of stocks form the health care sector
+        long healthCareStocksCount = allStockFundamentslsDetailsList.stream()
+                .filter(stockFundamentalsVo -> stockFundamentalsVo.getSectorId() == 10)
+                .count();
+                // Teeminal functions decide the output of the stream
+        System.out.println("count of heatl care stocks is : "+healthCareStocksCount);
+
+
+        //get teh lsit of all ticker names form the health care sector
+        List<String> healthCareTickerNamesList = allStockFundamentslsDetailsList.stream()
+                .filter(stockFundamentalsVo -> stockFundamentalsVo.getSectorId() == 10)
+                .sorted(Comparator.comparing(StockFundamentalsVo::getTickerName))       //order by ticker name ascending
+                .map(stockFundamentalsVo -> stockFundamentalsVo.getTickerName())    //Converting the Stockfundamentsals vo into String
+                .sorted(Comparator.comparing(String::toString).reversed())
+                .collect(Collectors.toList());
+        System.out.println(healthCareTickerNamesList);
+
+
+
+        //get the total market cap of health care stocks
+        Optional<Long> totalMarketCap = allStockFundamentslsDetailsList.stream()
+                .filter(stockFundamentalsVo -> stockFundamentalsVo.getSectorId() == 10)
+                .map(StockFundamentalsVo::getMarketCap)
+                .reduce((a,b)->a+b);
+//        totalMarketCap.ifPresent( totalMarketCap -> {
+//            System.out.println("Total Market Cap is :" + totalMarketCap);
+//        }
+        System.out.println("Sum of Total MarketCap is: "+totalMarketCap);
+
+
+        //for each subsector of the healthcare sector, get their stocks
+        Map<Integer, List<StockFundamentalsVo>> subSectorStocksByIdMap = allStockFundamentslsDetailsList.stream()
+                .filter(stockFundamentalsVo -> stockFundamentalsVo.getSectorId() == 10)
+                .collect(Collectors.groupingBy(StockFundamentalsVo::getSubsectorId));
+
+
+
+
     }
 }
