@@ -28,31 +28,38 @@ public class StockAnalytics {
             MarketAnalyticsService marketAnalyticsService = new MarketAnalyticsService(lookUpDao,stockFundamentalsDao,
                     stockPriceHistoryDao);
 
-            List<SectorVo> allSectorslist = marketAnalyticsService.getAllSectorEconomy();
+//            List<SectorVo> allSectorslist = marketAnalyticsService.getAllSectorEconomy();
 //            System.out.println(allSectorslist);
 
-            List<SubSectorVo> allSubSectorlist = marketAnalyticsService.getAllSubSectors();
-            System.out.println(allSubSectorlist);
+//            List<SubSectorVo> allSubSectorlist = marketAnalyticsService.getAllSubSectors();
+//            System.out.println(allSubSectorlist);
 
 
-            List<StockFundamentalsVo> allStockDetails = marketAnalyticsService.getAllStockDetails();
+//            List<StockFundamentalsVo> allStockDetails = marketAnalyticsService.getAllStockDetails();
 //           System.out.println(allStockDetails);
 
 
-           List<StockPriceHistoryVo> allStocksVolumeAndClosePrices = marketAnalyticsService.getAllStockVolumesAndClosePrices();
+//           List<StockPriceHistoryVo> allStocksVolumeAndClosePrices = marketAnalyticsService.getAllStockVolumesAndClosePrices();
 //           System.out.println(allStocksVolumeAndClosePrices);
 
-            LocalDate fromDate = LocalDate.parse("2023-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//            LocalDate fromDate = LocalDate.parse("2023-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-           List<StockPriceHistoryVo> stockPriceHistoryVos;
-            stockPriceHistoryVos = marketAnalyticsService.getStockVolumeAndClosePriceandDates("MSFT",
-                    fromDate,
-                    fromDate.plusMonths(3));
+//           List<StockPriceHistoryVo> stockPriceHistoryVos;
+//            stockPriceHistoryVos = marketAnalyticsService.getStockVolumeAndClosePriceandDates("MSFT",
+//                    fromDate,
+//                    fromDate.plusMonths(3));
 
 //            System.out.println(stockPriceHistoryVos);
 
 
-            marketAnalyticsService.processHealthCareStocks();
+//            marketAnalyticsService.processHealthCareStocks();
+
+
+//            marketAnalyticsService.identifyBlueChipStoclks();
+
+//            marketAnalyticsService.getSectorStocksCount();
+
+            marketAnalyticsService.calculateTotalmarketCapBySubsector();
 
             List<Integer> subSectorIds= new ArrayList<>();
             subSectorIds.add(189);
