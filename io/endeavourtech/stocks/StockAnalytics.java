@@ -63,9 +63,18 @@ public class StockAnalytics {
 
 //           marketAnalyticsService.getStockForLastYears("V");
 
-            marketAnalyticsService.calculateTotalmarketCapBySector();
+//            marketAnalyticsService.calculateTotalmarketCapBySector();
 
-            marketAnalyticsService.getStockForLastYears1("AAPL",LocalDate.of(2019,1,1),LocalDate.of(2024,12,31));
+
+
+            String tickerSymbol = "AAPL";
+            LocalDate toDate = LocalDate.now();
+            LocalDate fromDate = toDate.minusYears(5);
+
+//            marketAnalyticsService.getStockForLastYears1("AAPL",fromDate,toDate);
+
+
+            marketAnalyticsService.streamRecap();
 
             List<Integer> subSectorIds= new ArrayList<>();
             subSectorIds.add(189);

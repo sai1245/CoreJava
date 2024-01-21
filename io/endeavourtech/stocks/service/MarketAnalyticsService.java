@@ -367,6 +367,7 @@ finalOutputMap.forEach((sectoName,stockCount)-> System.out.println(sectoName+" :
             stocksList.stream()
                     .map(stockPriceHistoryVo -> stockPriceHistoryVo.getClosePrice())
                     .min(BigDecimal::compareTo)
+//     .min(Comparator.comparing(StockPriceHistoryVo::getClosePrice))   //we can use this function also insted of the above two lines,
                     .ifPresent(minPrice->finalOutputMap.put(year,minPrice));
         }));
 
@@ -389,12 +390,157 @@ finalOutputMap.forEach((sectoName,stockCount)-> System.out.println(sectoName+" :
 
         stockListBySectorIdMap.forEach((sectorId, stocksList) -> {
             OptionalDouble totalMarketCapForSectorOptional = stocksList.stream()
-                    .mapToDouble(stockFundamentalsVo -> (stockFundamentalsVo.getMarketCap()/1000000000)).average();
+                    .mapToDouble(stockFundamentalsVo -> (stockFundamentalsVo.getMarketCap())/1000000000).average();
 
             totalMarketCapForSectorOptional.ifPresent(totalMarketCap -> {
-                finalOutputMap1.put(sectorIdByName.get(sectorId), totalMarketCap);
+                finalOutputMap1.put(sectorIdByName.get(sectorId),totalMarketCap);
             });
         });
         System.out.println(finalOutputMap1);
+    }
+
+/**
+ * / Count of stocks with a null current ratio
+ *         // map() function - get a list of all tickers (This map() is different from the data structure Map)
+ *         // Using Collectors.joining
+ *         // sorted() function - by current ratio and then by market cap
+ *         // findFirst() - returns an optional
+ *         // limit() - Top 5 by current ratio
+ *         // toMap() - one-to-one mapping. Sector id, name
+ *         // toMap with duplicates
+ *         // groupingBy() - one-to-many mapping. SQL GROUP-BY's analogue. Group by sector id
+ *         // reduce() - Total market cap of all Healthcare stocks
+ */
+
+    public void streamRecap(){
+        List<StockFundamentalsVo> allStockFundamentalList = stockFundamentalsDao.getAllStockDetails();
+        List<SectorVo> allSectorsList = lookUpDao.getAllSectors();
+
+
+        /**
+         *  Count of stocks with a null current ratio
+         */
+        long countOfNullCurrentRatios = allStockFundamentalList.stream()
+                .filter(stockFundamentalsVo -> stockFundamentalsVo.getCurrentRatio() == null)
+                .count();
+
+        System.out.println("Stocks With Null Current Ratio is : "+countOfNullCurrentRatios);
+
+        /**
+         * map() function - get a list of all tickers (This map() is different from the data structure Map)
+         */
+
+        List<String> tickerNamesList = allStockFundamentalList.stream()
+                .filter(stockFundamentalsVo -> stockFundamentalsVo.getSectorId() == 14)
+                .map(stockFundamentalsVo -> stockFundamentalsVo.getTickerName())
+                .collect(Collectors.toList());
+
+        int countOfTickerNamesInTheList = tickerNamesList.size();
+        System.out.println("The List of Ticker names is : "+tickerNamesList+
+                " and the count of these ticker names is : "+countOfTickerNamesInTheList);
+
+
+        /**
+         * Using Collectors.joining
+         */
+
+
+        String techTickerSymbolUisngJoining = allStockFundamentalList.stream()
+                .filter(stockFundamentalsVo -> stockFundamentalsVo.getSectorId() == 14)
+                .map(stockFundamentalsVo -> stockFundamentalsVo.getTickerSymbol())
+                .collect(Collectors.joining("|"));
+
+        System.out.println(techTickerSymbolUisngJoining);
+
+        /**
+         * sorted() function - by current ratio and then by market cap
+         */
+
+        List<StockFundamentalsVo> currenRatioAndMarketCapUsingSorted = allStockFundamentalList.stream()
+                .sorted(Comparator.comparing(StockFundamentalsVo::getMarketCap, Comparator.nullsLast(Long::compareTo))
+                        .thenComparing(Comparator.comparing(StockFundamentalsVo::getMarketCap).reversed()))
+                .collect(Collectors.toList());
+
+        System.out.println(currenRatioAndMarketCapUsingSorted);
+
+/**
+ * findFirst() - returns an optional
+ */
+        Optional<StockFundamentalsVo> highMarektCapSfOptional = allStockFundamentalList.stream()
+                .sorted(Comparator.comparing(StockFundamentalsVo::getMarketCap).reversed())
+                .findFirst();
+        highMarektCapSfOptional.ifPresent(sf->System.out.println(sf));
+
+
+        /**
+         * limit() - Top 5 by current ratio
+         */
+
+        List<StockFundamentalsVo> top5List = allStockFundamentalList.stream()
+                .sorted(Comparator.comparing(StockFundamentalsVo::getMarketCap).reversed())
+                .limit(5)
+                .collect(Collectors.toList());
+
+        System.out.println(top5List);
+
+
+        /**
+         * toMap() - one-to-one mapping. Sector id, name
+         */
+        Map<Integer, String> sectorNameByIdMap = allSectorsList.stream()
+                .collect(Collectors.toMap(
+                        SectorVo::getSectorID,
+                        SectorVo::getSectorName
+                ));
+        System.out.println(sectorNameByIdMap);
+
+
+        /**
+         * toMap with duplicates
+         */
+
+        SectorVo whateverSector = new SectorVo();
+        whateverSector.setSectorName("Whatever");
+        whateverSector.setSectorID(17);
+
+
+        allSectorsList.add(whateverSector);
+
+        SectorVo mafiaSector = new SectorVo();
+        mafiaSector.setSectorID(17);
+        mafiaSector.setSectorName("Mafia Sector");
+
+        allSectorsList.add(mafiaSector);
+
+        Map<Integer, String> multipleSectorNameByIdMap = allSectorsList.stream()
+                .collect(Collectors.toMap(
+                        SectorVo::getSectorID,
+                        SectorVo::getSectorName,
+                        (a, b) -> b
+                ));
+
+        System.out.println(multipleSectorNameByIdMap);
+
+
+        /**
+         * groupingBy() - one-to-many mapping. SQL GROUP-BY's analogue. Group by sector id
+         */
+
+        Map<Integer, List<StockFundamentalsVo>> groupBySectorId = allStockFundamentalList.stream()
+                .collect(Collectors.groupingBy(StockFundamentalsVo::getSectorId));
+
+        System.out.println(groupBySectorId);
+
+        /**
+         * reduce() - Total market cap of all Healthcare stocks
+         */
+        Optional<Long> totalMarketCapOfTechnollogySector = allStockFundamentalList.stream()
+//                .filter(stockFundamentalsVo -> stockFundamentalsVo.getSectorId() == 14)
+                .map(stockFundamentalsVo -> stockFundamentalsVo.getMarketCap())
+//                .reduce((a,b)->a+b);
+                .reduce(Long::sum);
+
+        System.out.println(totalMarketCapOfTechnollogySector);
+
     }
 }
