@@ -13,6 +13,7 @@ import io.endeavourtech.stocks.vo.SubSectorVo;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,7 +85,8 @@ public class MarketAnalyticsService {
     public List<StockPriceHistoryVo> getStockVolumeAndClosePriceandDates(String tickerSymbol,
                                                                          LocalDate fromDate,
                                                                          LocalDate toDate) {
-        List<StockPriceHistoryVo> allStocksCloseAndVolumesDates = stockPriceHistoryDao.getStockVolumeAndClosePriceandDate(tickerSymbol,fromDate,toDate);
+        List<StockPriceHistoryVo> allStocksCloseAndVolumesDates = stockPriceHistoryDao.
+                getStockVolumeAndClosePriceandDate(tickerSymbol,fromDate,toDate);
         allStocksCloseAndVolumesDates.sort(Comparator.comparing(StockPriceHistoryVo::getClosePrice).reversed().thenComparing(
                 Comparator.comparing(StockPriceHistoryVo::getTradingDate)
         ));
@@ -310,12 +312,12 @@ finalOutputMap.forEach((sectoName,stockCount)-> System.out.println(sectoName+" :
 
         List<StockFundamentalsVo> allStockFundamentalsList = stockFundamentalsDao.getAllStockDetails();
         List<SubSectorVo> allSubSectorsList = lookUpDao.getAllSubSectors();
-
         Map<Integer, String> subSectorIdByName = allSubSectorsList.stream().collect(
                 Collectors.toMap(SubSectorVo::getSubSectorId, SubSectorVo::getSubSectorName));
 
         Map<Integer, List<StockFundamentalsVo>> stockListBySubsectorIdMap = allStockFundamentalsList.stream()
                 .collect(Collectors.groupingBy(StockFundamentalsVo::getSubsectorId));
+
 
         //Iterate the map and open a stream on the list to calculate total market cap for each subsector
         stockListBySubsectorIdMap.forEach((subSectorId, stocksList)->{
@@ -328,9 +330,71 @@ finalOutputMap.forEach((sectoName,stockCount)-> System.out.println(sectoName+" :
         });
         System.out.println(finalOutputMap);
 
+    }
 
+    public void getStockForLastYears(String tickerName){
+        Map<Integer,BigDecimal> finalOutputMap = new HashMap<>();
+        List<StockPriceHistoryVo> allPriceHistoryDetails= stockPriceHistoryDao.getStockClosePriceAndDate();
+
+        Map<Integer, List<StockPriceHistoryVo>> closePriceWithDate = allPriceHistoryDetails.stream()
+                .filter(stockPriceHistoryVo -> stockPriceHistoryVo.getTickerSymbol().equals(tickerName))
+                .filter(stockPriceHistoryVo -> stockPriceHistoryVo.getTradingDate().getYear()< Year.now().getValue()-5)
+                .collect(Collectors.groupingBy(year -> year.getTradingDate().getYear()));
+
+        closePriceWithDate.forEach(((year,stocksList)->{
+            stocksList.stream()
+                    .map(stockPriceHistoryVo -> stockPriceHistoryVo.getClosePrice())
+                    .min(BigDecimal::compareTo)
+                    .ifPresent(minPrice->finalOutputMap.put(year,minPrice));
+                }));
+
+        System.out.println(finalOutputMap);
 
 
     }
 
+
+    public void getStockForLastYears1(String tickerSymbol, LocalDate fromDate, LocalDate toDate){
+        Map<Integer,BigDecimal> finalOutputMap = new HashMap<>();
+        List<StockPriceHistoryVo> allPriceHistoryDetails= stockPriceHistoryDao.
+                getStockVolumeAndClosePriceandDate(tickerSymbol,fromDate,toDate);
+
+        Map<Integer, List<StockPriceHistoryVo>> closePriceWithDate = allPriceHistoryDetails.stream()
+                .filter(stockPriceHistoryVo -> stockPriceHistoryVo.getTickerSymbol().equals(tickerSymbol))
+                .collect(Collectors.groupingBy(year -> year.getTradingDate().getYear()));
+
+        closePriceWithDate.forEach(((year,stocksList)->{
+            stocksList.stream()
+                    .map(stockPriceHistoryVo -> stockPriceHistoryVo.getClosePrice())
+                    .min(BigDecimal::compareTo)
+                    .ifPresent(minPrice->finalOutputMap.put(year,minPrice));
+        }));
+
+        System.out.println(finalOutputMap);
+
+
+    }
+
+    public void calculateTotalmarketCapBySector() {
+        List<SectorVo> allSectorlist = lookUpDao.getAllSectors();
+        List<StockFundamentalsVo> allStockFundamentalsList = stockFundamentalsDao.getAllStockDetails();
+
+        Map<String, Double> finalOutputMap1 = new HashMap<>();
+
+        Map<Integer, String> sectorIdByName = allSectorlist.stream().collect(
+                Collectors.toMap(SectorVo::getSectorID, SectorVo::getSectorName));
+
+        Map<Integer, List<StockFundamentalsVo>> stockListBySectorIdMap = allStockFundamentalsList.stream()
+                .collect(Collectors.groupingBy(StockFundamentalsVo::getSectorId));
+
+        stockListBySectorIdMap.forEach((sectorId, stocksList) -> {
+            OptionalDouble totalMarketCapForSectorOptional = stocksList.stream()
+                    .mapToDouble(stockFundamentalsVo -> (stockFundamentalsVo.getMarketCap()/1000000000)).average();
+
+            totalMarketCapForSectorOptional.ifPresent(totalMarketCap -> {
+                finalOutputMap1.put(sectorIdByName.get(sectorId), totalMarketCap);
+            });
+        });
+        System.out.println(finalOutputMap1);
+    }
 }

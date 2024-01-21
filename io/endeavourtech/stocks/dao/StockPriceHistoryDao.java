@@ -39,7 +39,9 @@ public class StockPriceHistoryDao extends BaseDao  {
         }
         return stockPriceHistoryVoList;
     }
-
+//
+//    Inputs for the below method call
+//    String tickerSymbol, LocalDate fromDate, LocalDate toDate
     public List<StockPriceHistoryVo> getStockVolumeAndClosePriceandDate(String tickerSymbol, LocalDate fromDate, LocalDate toDate){
         String sqlQuery = """
                 select\s
@@ -61,6 +63,40 @@ public class StockPriceHistoryDao extends BaseDao  {
             preparedStatement.setDate(2, Date.valueOf(fromDate));
             preparedStatement.setDate(3,Date.valueOf(toDate));
 
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                StockPriceHistoryVo stockPriceHistoryVo = new StockPriceHistoryVo();
+                stockPriceHistoryVo.setTickerSymbol(resultSet.getString("ticker_symbol"));
+                stockPriceHistoryVo.setTradingDate(resultSet.getDate("trading_date").toLocalDate());
+                stockPriceHistoryVo.setClosePrice(resultSet.getBigDecimal("close_price"));
+                stockPriceHistoryVo.setVolume(resultSet.getBigDecimal("volume"));
+
+                stockPriceHistoryVoList.add(stockPriceHistoryVo);
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return stockPriceHistoryVoList;
+
+    }
+
+    public List<StockPriceHistoryVo> getStockClosePriceAndDate(){
+        String sqlQuery = """
+                select\s
+                	sph.ticker_symbol ,
+                	sph.close_price ,
+                	sph.volume,
+                	sph.trading_date\s
+                from\s
+                	endeavour.stocks_price_history sph
+                	limit 5000000
+                """;
+        List<StockPriceHistoryVo> stockPriceHistoryVoList = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {

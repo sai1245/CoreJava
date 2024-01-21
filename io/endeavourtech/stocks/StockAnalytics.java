@@ -59,17 +59,22 @@ public class StockAnalytics {
 
 //            marketAnalyticsService.getSectorStocksCount();
 
-            marketAnalyticsService.calculateTotalmarketCapBySubsector();
+//            marketAnalyticsService.calculateTotalmarketCapBySubsector();
+
+//           marketAnalyticsService.getStockForLastYears("V");
+
+            marketAnalyticsService.calculateTotalmarketCapBySector();
+
+            marketAnalyticsService.getStockForLastYears1("AAPL",LocalDate.of(2019,1,1),LocalDate.of(2024,12,31));
 
             List<Integer> subSectorIds= new ArrayList<>();
             subSectorIds.add(189);
             subSectorIds.add(239);
             subSectorIds.add(269);
-            List<SubSectorVo> allSubSectorsOfEconomyByID=marketAnalyticsService.getAllSubSectors();
+//            List<SubSectorVo> allSubSectorsOfEconomyByID=marketAnalyticsService.getAllSubSectors();
 //            System.out.println(allSubSectorsOfEconomyByID);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        };
+        }
+        ;
 
     }
 }
