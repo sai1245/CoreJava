@@ -14,7 +14,11 @@ public class PlayingWithShapes {
         Shape[] shapeArray=new Shape[]{square,rectangle,circle};
 
         calculateTotalArea(shapeArray);
+
+        Square2 smallSquare = new Square2(new BigDecimal(10));
+        System.out.println(smallSquare);
     }
+
 
     private static void calculateTotalArea(Shape[] shapeArray) {
 

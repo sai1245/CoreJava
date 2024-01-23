@@ -30,10 +30,11 @@ public class FunctionalProgrammingExamples {
         consumeRandomValueCO.accept("Sai Krishna");
 
 
-
         Consumer<String> printSomeValueCS_FI = System.out::println;
         printSomeValueCS_FI.accept("USING FUNCTIONAL INTERFACE");
 
+
+        
         //BiConsumer Example
         BiConsumer<String,Integer> biConsumeRandomValueCO = (str1, int1) -> System.out.println("The BiConsumer Operator Result is: "+(str1+int1));
         biConsumeRandomValueCO.accept("Sai Krishna ",07);

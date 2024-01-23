@@ -6,7 +6,7 @@ public interface Shape {
 
     /**
      * Abstract Methods
-     * @return
+     *
      */
     BigDecimal calculateArea();
 

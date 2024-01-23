@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 import static java.util.Locale.filter;
 
 public class MarketAnalyticsService {
-    LookUpDao lookUpDao;
+    LookUpDao lookUpDao = new LookUpDao();
 
 //Dependacy Injectoin - MarketAnalyticsService needs lookupDao to function ad
 // hence the lookup object is created and injected into the constructor
 
-    StockFundamentalsDao stockFundamentalsDao;
+    StockFundamentalsDao stockFundamentalsDao = new StockFundamentalsDao();
 
     StockPriceHistoryDao stockPriceHistoryDao;
 
@@ -543,4 +543,11 @@ finalOutputMap.forEach((sectoName,stockCount)-> System.out.println(sectoName+" :
         System.out.println(totalMarketCapOfTechnollogySector);
 
     }
+
+
+    /**
+     * Identify Subsector with Highest Average ROE:
+     * Implement a method that finds and returns the subsector name with the highest average Return on Equity (ROE) among its stocks.
+     */
+
 }
